@@ -110,7 +110,7 @@ func (e *Elastic) ParseToQuery() (query []byte, err error) {
 		}
 	}
 
-	query, err = json.Marshal(e.Query)
+	query, err = json.Marshal(e.Query.Query)
 	return
 }
 
