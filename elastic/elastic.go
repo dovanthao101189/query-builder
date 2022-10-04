@@ -122,7 +122,7 @@ func (e *Elastic) parseToDSLQuery(in Condition) (err error) {
 		return
 	}
 
-	if contains[string](allowMustNot, operator) {
+	if contains(allowMustNot, operator) {
 		e.Query.Query.Bool.MustNot = append(e.Query.Query.Bool.MustNot, params)
 		return
 	}
@@ -176,11 +176,11 @@ func parseComparisonOperators(in Condition) (rs map[string]interface{}, err erro
 func validate(in []Condition) (err error) {
 	for i := 0; i < len(in); i++ {
 		cond := in[i]
-		if !contains[string](allowType, cond.Type) {
+		if !contains(allowType, cond.Type) {
 			err = errors.New("unsupported data type")
 			break
 		}
-		if !contains[string](allowLogicalOperators, cond.LogicalOperators) {
+		if !contains(allowLogicalOperators, cond.LogicalOperators) {
 			err = errors.New("unsupported logical operators")
 			break
 		}
@@ -188,25 +188,25 @@ func validate(in []Condition) (err error) {
 		condComparisonOperators := cond.ComparisonOperators
 		switch cond.Type {
 		case "text":
-			if !contains[string](allowText, condComparisonOperators) {
+			if !contains(allowText, condComparisonOperators) {
 				err = errors.New("unsupported comparison operators for text")
 				break
 			}
 			break
 		case "number":
-			if !contains[string](allowNumber, condComparisonOperators) {
+			if !contains(allowNumber, condComparisonOperators) {
 				err = errors.New("unsupported comparison operators for number")
 				break
 			}
 			break
 		case "array":
-			if !contains[string](allowArray, condComparisonOperators) {
+			if !contains(allowArray, condComparisonOperators) {
 				err = errors.New("unsupported comparison operators for array")
 				break
 			}
 			break
 		case "date":
-			if !contains[string](allowDate, condComparisonOperators) {
+			if !contains(allowDate, condComparisonOperators) {
 				err = errors.New("unsupported comparison operators for date")
 				break
 			}
@@ -216,7 +216,16 @@ func validate(in []Condition) (err error) {
 	return
 }
 
-func contains[T comparable](s []T, e T) bool {
+//func contains[T comparable](s []T, e T) bool {
+//	for _, v := range s {
+//		if v == e {
+//			return true
+//		}
+//	}
+//	return false
+//}
+
+func contains(s []string, e string) bool {
 	for _, v := range s {
 		if v == e {
 			return true
