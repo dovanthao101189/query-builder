@@ -85,7 +85,7 @@ type BoolQuery struct {
 //	fmt.Println("start==========")
 //	fmt.Printf("err: %v", err)
 //	fmt.Println("")
-//	fmt.Printf("rs: %v", string(rs))
+//	fmt.Printf("rs: %v", rs)
 //	fmt.Println("")
 //	fmt.Println("end==========")
 //}
@@ -94,7 +94,7 @@ func New(in []Condition) *Elastic {
 	return &Elastic{Params: in}
 }
 
-func (e *Elastic) ParseToQuery() (query []byte, err error) {
+func (e *Elastic) ParseToQuery() (rs map[string]interface{}, err error) {
 	in := e.Params
 	err = validate(in)
 	in = toLower(in)
@@ -110,8 +110,10 @@ func (e *Elastic) ParseToQuery() (query []byte, err error) {
 		}
 	}
 
-	query, err = json.Marshal(e.Query.Query)
-	return
+	mQuery, _ := json.Marshal(e.Query)
+	err = json.Unmarshal(mQuery, &rs)
+
+	return rs, err
 }
 
 func (e *Elastic) parseToDSLQuery(in Condition) (err error) {
