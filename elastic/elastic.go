@@ -3,6 +3,7 @@ package elastic
 import (
 	"encoding/json"
 	"errors"
+	"strconv"
 	"strings"
 )
 
@@ -199,6 +200,11 @@ func validate(in []Condition) (err error) {
 			if !contains(allowNumber, condComparisonOperators) {
 				err = errors.New("unsupported comparison operators for number")
 				break
+			}
+
+			_, err := strconv.ParseFloat(cond.Value.(string), 32)
+			if err != nil {
+				err = errors.New("prams invalid")
 			}
 			break
 		case "array":
